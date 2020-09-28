@@ -297,20 +297,18 @@
             $scope.data_tvv = [];
             $scope.type = "1";
             $scope.setTime();
-            $scope.selectUser({
-                id: 0
-            });
+
             $scope.getService();
 
             $('.select2').select2();
 
             if ($location.search().id && $location.search().id > 0) {
                 $scope.getApp($location.search().id);
+            } else {
+                $scope.selectUser({
+                    id: 0
+                });
             }
-
-
-
-
         }
         $scope.getApp = (id) => {
             var data = {

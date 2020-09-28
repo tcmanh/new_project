@@ -10,10 +10,11 @@ defined('BASEPATH') or exit('No direct script access allowed');
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<base href="<?= base_url() ?>" />
+    <base href="<?= base_url() ?>" />
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>SB Admin - Start Bootstrap Template</title>
+    <title>Veterinary</title>
+    <link href="<?php echo base_url('resources/images/favicon.png'); ?>" rel="shortcut icon" type="image/x-icon" />
 
     <!-- Bootstrap core CSS -->
     <link href="<?= base_url() ?>resources/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -64,18 +65,18 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                 </a>
                             </li>
                         <?php else : ?>
-                            <?php $parent_active = ($current_uri == $parent); ?>
+                            <?php $parent_active = ($current_uri == $parent || $ctrler == $parent); ?>
                             <li class='treeview <?php if ($parent_active) echo 'active'; ?> nav-item'>
-                                <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseComponents" aria-expanded="false">
+                                <a class="nav-link nav-link-collapse   <?php if (!$parent_active) echo 'collapsed'; ?>" data-toggle="collapse" href="#collapseComponents<?php echo $parent ?>" aria-expanded="<?php echo $parent_active == 1 ? 'true' : 'false' ?>">
                                     <i class='<?php echo $parent_params['icon']; ?>'></i>
                                     <span><?php echo $parent_params['name']; ?></span>
                                 </a>
-                                <ul class='treeview-menu sidebar-second-level <?php if (!$parent_active) echo 'collapse'; ?>' id="collapseComponents" aria-expanded="false">
+                                <ul class='treeview-menu sidebar-second-level collapse <?php if ($parent_active) echo 'show'; ?>' id="collapseComponents<?php echo $parent ?>" aria-expanded="<?php echo $parent_active == 1 ? 'true' : 'false' ?>">
                                     <?php foreach ($parent_params['children'] as $name => $url) : ?>
                                         <?php if (empty($page_auth[$url]) || $this->ion_auth->in_group($page_auth[$url])) : ?>
                                             <?php $child_active = ($current_uri == $url); ?>
                                             <li <?php if ($child_active) echo 'class="active"'; ?>>
-                                                <a href='<?php echo $url; ?>'><i class='fa fa-circle-o'></i> <?php echo $name ?>
+                                                <a href='<?php echo $url; ?>' class="child"><i class='fa fa-circle-o'></i> <?php echo $name ?>
                                                 </a>
                                             </li>
                                         <?php endif; ?>

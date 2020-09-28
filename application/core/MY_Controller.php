@@ -47,7 +47,7 @@ class Auth_Controller extends CI_Controller
         $this->Admin_model->verifyUser();
 
 
-
+        $this->mCtrler = $this->router->fetch_class();
         $this->mMethod = $this->input->server('REQUEST_METHOD');
 
 
@@ -147,45 +147,27 @@ class Auth_Controller extends CI_Controller
                     'url'         => 'appointment',
                     'icon'        => 'fa fa-calendar',
                     'children'  => array(
-                        'Đặt lịch'            => 'appointment'
+                        'Đặt lịch'            => 'appointment',
+                        'Quản lý lịch đặt'    => 'appointment/list' 
+                    )
+                ),
+                'customer' => array(
+                    'name'        => 'Khác hàng',
+                    'url'         => 'customer',
+                    'icon'        => 'fa fa-calendar',
+                    'children'  => array(
+                        'Danh sách'            => 'customer'
                     )
                 )
             ),
+
             // Login page
             'login_url' => 'login',
             // Restricted pages
             'page_auth' => array(),
             // AdminLTE settings
             'adminlte' => array(
-                'body_class' => array(
-                    'webmaster'            => 'skin-red',
-                    'admin'                => 'skin-green',
-
-                    'accountant'        => 'skin-purple',
-                    'hr'                => 'skin-purple',
-
-                    'manager_tuition'    => 'skin-blue',
-                    'consultant'        => 'skin-blue',
-                    'telesale'            => 'skin-blue',
-                    'manager'            => 'skin-blue',
-
-                    'receptionist'        => 'skin-black',
-                    'technician'        => 'skin-black',
-                    'beauty'            => 'skin-black',
-                    'dng'                => 'skin-black',
-                    'security'            => 'skin-black',
-                    'unknown'            => 'skin-black',
-                    'assistantmanager'    => 'skin-green',
-                    'marketing'            => 'skin-green',
-                    'kythuat'            => 'skin-green',
-                    'doctor'            => 'skin-green',
-                    'nurse'            => 'skin-green',
-                    'nurse_out'            => 'skin-green',
-                    'assistantdoctor'    => 'skin-green',
-                    'dev'                => 'skin-red',
-                    'teacher'           => 'skin-black',
-                    'internal_training' => 'skin-red'
-                )
+                'body_class' => array()
             ),
             // Debug tools
             'debug' => array(

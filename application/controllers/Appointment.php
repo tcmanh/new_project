@@ -246,4 +246,10 @@ class Appointment extends Auth_Controller
 			->get()->row();
 		echo json_encode(array('status' => 1, 'data' => $rs));
 	}
+
+	public function list()
+	{
+		$this->render('appointment/list');
+	}
+
 }
