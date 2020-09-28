@@ -1,0 +1,33 @@
+.navbar{
+    padding: 2px 1rem;
+}
+#mainNav .navbar-collapse .navbar-nav.sidebar-nav{
+    margin-top: 42px !important;
+}
+#mainNav .navbar-collapse .navbar-nav.sidebar-nav{
+    font-size: 15px;
+}
+#mainNav .navbar-collapse .navbar-nav.sidebar-nav i{
+    margin-right: 5px
+}
+#mainNav .navbar-collapse .navbar-nav.sidebar-nav > .nav-item .sidebar-second-level, #mainNav .navbar-collapse .navbar-nav.sidebar-nav > .nav-item .sidebar-third-level{
+    font-size: 13px;
+}
+body,input,select,textarea{
+    font-size: 14px;
+}
+.form-control{
+    font-size: 14px;
+}
+.cus-select{
+    height: 35px !important;
+}
+.form-group{
+    margin-bottom: 7px;
+}
+body{
+    background: white !important;
+}
+#mainNav .navbar-collapse .navbar-nav.sidebar-nav{
+    bottom: 0;
+}
