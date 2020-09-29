@@ -158,7 +158,7 @@
                             </div>
                         </div>
                         <div class="col-md-12 col-lg-6 ">
-                            <div class="form-group">
+                            <div class="form-group" ng-class="{'hide':type==2}">
                                 <label class=" control-label ">
                                     Ngày :
                                     <span class="df-date" ng-click="selectDate(date)" id="cr_date_show" ng-class="{'active_date':date==cr_date}">
@@ -175,6 +175,12 @@
                                     <input type="text" class="form-control datepicker" ng-model="ob.date" ng-change="changeSearch()" name="date" value="<?php echo date('Y-m-d'); ?>">
                                 </div>
                                 <div class="clearfix"></div>
+                            </div>
+                            <div class="form-group" ng-class="{'hide':type==1}">
+                                <label class=" control-label ">
+                                    Ngày :
+                                </label>
+                                <input type="search" autocomplete="off" class="date form-control ng-pristine ng-valid ng-not-empty ng-touched" ng-model="ob.date_range" name="date_filter" ng-model="filter.date">
                             </div>
                         </div>
                     </div>
@@ -205,7 +211,7 @@
                         <div class="clearfix"></div>
                     </div>
                     <div class="form-group">
-                        <div class="" style="position: relative">
+                        <div class="" ng-class="{'hide-bg':type==2}" style="position: relative">
 
                             <div class="bootstrap-timepicker hide" ng-click="dropdown()">
                                 <input type="text" class="form-control " ng-model="ob.time" name="time" value="" style="pointer-events: none">
@@ -297,6 +303,7 @@
             $scope.data_tvv = [];
             $scope.type = "1";
             $scope.setTime();
+            $scope.pass = true;
 
             $scope.getService();
 
@@ -309,7 +316,47 @@
                     id: 0
                 });
             }
+            $scope.dateInputInit();
+
+            if ($('.datepicker').length) {
+                $(".datepicker").datepicker({
+                    dateFormat: "yy-mm-dd"
+                });
+            }
         }
+
+        $scope.dateInputInit = () => {
+            if ($('.date').length) {
+                //var start = $scope.start;
+                //var end = $scope.end;
+                if (typeof start === "undefined") {
+                    start = end = moment().format("MM/DD/YYYY");
+                }
+                setTimeout(() => {
+                    $('.date').daterangepicker({
+                        opens: 'right',
+                        alwaysShowCalendars: true,
+                        startDate: moment(),
+                        endDate: moment(),
+                        ranges: {
+                            'Hôm nay': [moment(), moment()],
+                            'Hôm qua': [moment().subtract(1, 'days'), moment().subtract(1,
+                                'days')],
+                            '7 ngày trước': [moment().subtract(6, 'days'), moment()],
+                            '30 ngày trước': [moment().subtract(29, 'days'), moment()],
+                            'Tháng này': [moment().startOf('month'), moment().endOf('month')],
+                            'Tháng trước': [moment().subtract(1, 'month').startOf('month'),
+                                moment().subtract(1, 'month').endOf('month')
+                            ]
+                        },
+                        locale: {
+                            format: 'DD/MM/YYYY'
+                        }
+                    });
+                }, 100);
+            }
+        }
+
         $scope.getApp = (id) => {
             var data = {
                 id: id
@@ -323,6 +370,7 @@
 
                     $scope.ob.date = temp.date;
                     $scope.ob.time = temp.time;
+
                     $scope.type = temp.type;
                     $scope.ob.service_id = temp.service_id;
 
@@ -419,6 +467,12 @@
                 return false
             }
 
+            if ($scope.type == 1) {
+                delete $scope.ob.date_range;
+            }else{
+                delete $scope.ob.date;
+            }
+
             $(event.target).css('pointer-events', 'none');
             $http.post(base_url + '/appointment/ajax_save', JSON.stringify($scope.ob)).then(r => {
                 $(event.target).css('pointer-events', 'auto');
@@ -480,22 +534,14 @@
             });
         }
 
-        $scope.resetTime = () => {
-            //	$scope.time = undefined;
-            $scope.ob_time.map(function(x) {
+        $scope.resetTime = (time = null) => {
+            $scope.ob_time.forEach(x => {
                 x.active = 0;
-                // if ($scope.time) {
-                // 	$scope.ob_time.map(function(x) {
-                // 		x.active = 0;
-                // 		var time = $scope.time;
-                // 		console.log(moment(time, 'HH:mm:ss')._i == moment(x.time + ':00', 'HH:mm:ss')._i);
-                // 		if (moment(x.time + ':00', 'HH:mm:ss')._i == moment(time, 'HH:mm:ss')._i) {
-                // 			x.active = 1;
-                // 		}
-                // 		return x
-                // 	});
-                // }
-                return x
+                if (time) {
+                    if (moment(x.time, 'HH:ss').format('HH:ss') == moment(time, 'HH:ss').format('HH:ss')) {
+                        x.active = 1;
+                    }
+                }
             });
         }
 
@@ -520,6 +566,10 @@
 
         $scope.selectUser = (item) => {
 
+            if (!$scope.pass) {
+                return false;
+            }
+
             $scope.resetTime();
             $scope.cr_user = item;
             $scope.filter.technician_id = item.id;
@@ -541,10 +591,7 @@
                 $('.title-ktv').css('display', 'block');
 
                 if (r && r.data.status == 1) {
-
-
                     $scope.total_in = r.data.total_in;
-
                     $scope.ob_time.map(function(x, index) {
                         x.total = undefined;
                         x.bettwen = false;
@@ -580,15 +627,15 @@
                         });
 
                         x.active = 0;
-                        if ($scope.time) {
-                            var time = $scope.time;
-                            if (moment(x.time + ':00', 'HH:mm:ss')._i == moment(time, 'HH:mm:ss')._i) {
+                        if ($scope.ob.time) {
+                            var time = $scope.ob.time;
+                            if (moment(x.time, 'HH:ss').format('HH:ss') == moment(time, 'HH:ss').format('HH:ss')) {
                                 x.active = 1;
                             }
                         }
                         return x
                     });
-
+                    $scope.pass = true;
                 } else toastr["error"]("Đã có lỗi xẩy ra!");
             })
         }

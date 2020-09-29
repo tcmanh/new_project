@@ -262,7 +262,7 @@
         font-size: 13px;
         margin-bottom: 3px;
         margin-top: 3px;
-        width: calc(14.28% - 23px);
+        width: calc(14.28% - 21px);
         padding: 5px;
         transition: 0.3s all;
         height: 45px;
@@ -273,6 +273,23 @@
         margin-left: 5px;
         border-radius: 5px;
         background: #e4e4e4;
+    }
+    .hide-bg{
+        position:relative;
+        pointer-events: none;
+        cursor: not-allowed;
+
+    }
+    .hide-bg:before{
+       content: '';
+       position: absolute;
+       top: 0;
+       width: 100%;
+       left: 0;
+       bottom: 0;
+       background: rgba(0, 0, 0, 0.36);
+       cursor: not-allowed;
+
     }
 
     @media only screen and (max-width: 600px) {
