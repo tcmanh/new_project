@@ -22,7 +22,7 @@ class Appointment extends Auth_Controller
 		// 	->where('a.main_store_id', $filter->store_id)->get()->row();
 
 
-		$single_date = isset($filter->single_date) ? 'and ap.date="' . $filter->single_date . '"' : '';
+		$single_date = isset($filter->date) ? 'and ap.date="' . $filter->date . '"' : '';
 		$tech_id = isset($filter->technician_id) && $filter->technician_id != 0 ? 'and ap.technician_id ="' . $filter->technician_id . '"' : '';
 		if (isset($filter->technician_id)) {
 			$rs = $this->db->query("select

@@ -523,6 +523,7 @@
             $scope.resetTime();
             $scope.cr_user = item;
             $scope.filter.technician_id = item.id;
+            $scope.filter.date = $scope.ob.date;
             $scope.ob.technician_id = item.id;
             $scope.data_tvv.map(function(x) {
                 x.active = 0;
