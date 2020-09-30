@@ -252,4 +252,5 @@ class Appointment extends Auth_Controller
 		$this->render('appointment/list');
 	}
 
+	
 }
