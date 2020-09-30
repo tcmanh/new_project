@@ -113,7 +113,7 @@ class Appointment extends Auth_Controller
 
 		$id = -1;
 		if (strlen($phone) > 8) {
-			$this->db->select()->from('appointments a')->join('customers b', 'a.customer_id=b.id')->where('b.phone', $phone);
+			$this->db->select('count(a.id) total,if(a.id is not null,a.id,0) id')->from('appointments a')->join('customers b', 'a.customer_id=b.id')->where('b.phone', $phone);
 
 			if (isset($filter->id)) {
 				$this->db->where('a.id !=', $filter->id);
@@ -122,6 +122,7 @@ class Appointment extends Auth_Controller
 				$this->db->where('a.date', $filter->date);
 			}
 			$app = $this->db->get()->row();
+
 			$id = $app ? $app->id : -1;
 		} else {
 			$id = 0;
@@ -263,8 +264,12 @@ class Appointment extends Auth_Controller
 	public function ajax_get_app()
 	{
 		$filter = (object) json_decode($this->input->get('filter'));
-		$rs = $this->db->select('a.note,a.id,a.service_id,c.type,a.date,DATE_FORMAT(a.time,"%H:%i") time,b.name,b.phone')->from('appointments a')->join('customers b', 'a.customer_id=b.id')->join('services c', 'a.service_id=c.id')->where('a.id',	$filter->id)
+		$rs = $this->db->select('a.time as time_,a.note,a.id,a.service_id,c.type,a.date,DATE_FORMAT(a.time,"%H:%i") time,b.name,b.phone')->from('appointments a')->join('customers b', 'a.customer_id=b.id')->join('services c', 'a.service_id=c.id')->where('a.id',	$filter->id)
 			->get()->row();
+		$rs->is_over = 0;
+		if (strtotime($rs->date . " " . $rs->time) < strtotime(date('Y-m-d H:i:s') || $rs->status > 0)) {
+			$rs->is_over = 1;
+		}
 		echo json_encode(array('status' => 1, 'data' => $rs));
 	}
 
@@ -273,5 +278,39 @@ class Appointment extends Auth_Controller
 		$this->render('appointment/list');
 	}
 
-	
+	public function ajax_open_history()
+	{
+		$cr_user =  $this->session->userdata("admin_id");
+
+		$lists = $this->db->select('app.*,b.name,b.phone')->from('appointments as app')->join('customers b', 'app.customer_id=b.id')
+			->where(
+				array(
+					'app.import_id' => $cr_user,
+					'app.created >=' => date('Y-m-d 00:00:00'),
+				)
+			)->order_by('app.time')->get()->result();
+
+		$qr = $this->db->last_query();
+
+
+		$list_customers = $this->db->select('app.*,b.name,b.phone')->from('appointments as app')->join('customers b', 'app.customer_id=b.id')
+			->where(array(
+				'app.import_id'	=> $cr_user,
+				'app.date'		=> date('Y-m-d'),
+				'app.status'	=> 0
+			))->order_by('app.time')->get()->result();
+
+
+		$tomorrow = date("Y-m-d", strtotime("+1 day"));
+
+		$list_tomorow_customers = $this->db->select('app.*,b.name,b.phone')->from('appointments as app')->join('customers b', 'app.customer_id=b.id')
+			->where(array(
+				'app.import_id'	=> $cr_user,
+				'app.date'		=> $tomorrow,
+				'app.status'	=> 0
+			))->order_by('app.time')->get()->result();
+
+
+		echo json_encode(array('status' => 1, 'lists' => 	$lists, 'list_customers' => 	$list_customers, 'list_tomorow_customers' => 	$list_tomorow_customers));
+	}
 }

@@ -128,7 +128,7 @@
                                 </label>
                                 <div class="" style="position: relative">
                                     <input type="text" id="phoneForm" value="" onkeyup="this.value=this.value.replace(/[^\d]{12,}/,'').replace(/\D/g,'')" ng-model-options="{debounce:350}" class="form-control phone" ng-model="ob.phone" ng-change="changePhone()" name="phone" placeholder="Điện thoại" required="required" autocomplete="off">
-                                    <div class="dropdown-menu resust-search table-responsive"></div>
+                                    <div class="dropdown-menu resust-search table-responsive" style="width: 100%;"></div>
                                     <span class="cursor" data-toggle="modal" data-target="#history" data-toggle="tooltip" title="Lịch sử khách hàng">
                                         <img ng-if="!load_history && customer_history && customer_history.length>0" style="width: 22px;position: absolute;top: 50%;right: 7px;transform: translateY(-50%);" src="resources/images/school-material.svg" alt="">
                                         <img ng-if="load_history==true" style="width: 22px;position: absolute;top: 50%;right: 7px;transform: translateY(-50%);" src="resources/images/loadhv.svg" alt="">
@@ -278,7 +278,156 @@
         </div>
     </div>
     <?php $this->load->view('appointment/schedule_app'); ?>
+
+    <div id="history_" ng-app="history_" ng-controller="history_" ng-init="init()" style="width: 100%;">
+        <div class="col-md-12">
+            <button ng-click="openHistory()">
+                Hiển thị lịch sử đặt lịch
+            </button>
+            <p></p>
+        </div>
+
+        <div class="col-md-12">
+            <div class="other-box box-primary" style="background: white" ng-if="lists && lists.length>0">
+                <div class="box-header">
+                    <strong class="box-title">Đã đặt trong ngày <small>(Lịch hẹn được tạo hôm nay)</small></strong>
+                    <p></p>
+                </div>
+                <div class="box-body table-responsive ">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th class="text-center">STT</th>
+                                <th>Họ tên</th>
+                                <th>Điện thoại</th>
+                                <th>Lịch hẹn</th>
+                                <th>Ghi chú</th>
+                                <th>Ngày tạo</th>
+                                <th class="text-center">Sửa</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="(index,value) in lists">
+                                <td class="text-center">{{index+1}}</td>
+                                <td>{{value.name}}</td>
+                                <td>*****{{value.phone.slice(-4)}}</td>
+                                <td> {{value.date}} {{value.time}}</td>
+                                <td> {{value.note}}</td>
+                                <td> {{value.created}}</td>
+                                <td class="text-center">
+                                    <a ng-if="value.status!=1" href="appointment?id={{value.id}}" target="_blank">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p></p>
+            </div>
+            <div class="other-box box-primary" style="background: white" ng-if="list_customers && list_customers.length>0">
+                <div class="box-header">
+                    <strong class="box-title">Khách hẹn trong ngày <small>(Khách hẹn hôm nay chưa đến)</small></strong>
+                    <p></p>
+                </div>
+                <div class="box-body table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th class="text-center">STT</th>
+                                <th>Họ tên</th>
+                                <th>Điện thoại</th>
+                                <th>Lịch hẹn</th>
+                                <th>Ghi chú</th>
+                                <th>Ngày tạo</th>
+                                <th class="text-center">Sửa</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="(index,value) in list_customers">
+                                <td class="text-center">{{index+1}}</td>
+                                <td>{{value.name}}</td>
+                                <td>*****{{value.phone.slice(-4)}}</td>
+                                <td> {{value.date}} {{value.time}}</td>
+                                <td> {{value.note}}</td>
+                                <td> {{value.created}}</td>
+                                <td class="text-center">
+                                    <a href="appointment?id={{value.id}}" target="_blank">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p></p>
+            </div>
+            <div class="other-box box-primary" style="background: white" ng-if="list_tomorow_customers && list_tomorow_customers.length>0">
+                <div class="box-header">
+                    <strong class="box-title">Khách hẹn ngày mai</strong>
+                    <p></p>
+                </div>
+                <div class="box-body table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th class="text-center">STT</th>
+                                <th>Họ tên</th>
+                                <th>Điện thoại</th>
+                                <th>Lịch hẹn</th>
+                                <th>Ghi chú</th>
+                                <th>Ngày tạo</th>
+                                <th class="text-center">Sửa</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="(index,value) in list_tomorow_customers">
+                                <td class="text-center">{{index+1}}</td>
+                                <td>{{value.name}}</td>
+                                <td>*****{{value.phone.slice(-4)}}</td>
+                                <td> {{value.date}} {{value.time}}</td>
+                                <td> {{value.note}}</td>
+                                <td> {{value.created}}</td>
+                                <td class="text-center">
+                                    <a href="appointment?id={{value.id}}" target="_blank">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
 </div>
+<script>
+    var app3 = angular.module('history_', []);
+    app3.controller('history_', function($scope, $http) {
+        $scope.init = () => {}
+
+
+        $scope.openHistory = () => {
+            $scope.load_his_user = true;
+            $http.get(base_url + '/appointment/ajax_open_history').then(r => {
+                if (r && r.data.status == 1) {
+                    $scope.load_his_user = false;
+
+                    $scope.list_customers = r.data.list_customers;
+                    $scope.lists = r.data.lists;
+                    $scope.list_tomorow_customers = r.data.list_tomorow_customers;
+
+                } else toastr["error"]("Đã có lỗi xẩy ra!");
+
+            });
+        }
+    });
+
+    angular.bootstrap(document.getElementById("history_"), ['history_']);
+</script>
 
 
 <script>
@@ -376,6 +525,7 @@
 
                     $scope.ob.note = temp.note;
                     $scope.ob.id = temp.id;
+                    $scope.ob.is_over = temp.is_over;
                     $scope.select2();
 
                 } else toastr["error"]("Đã có lỗi xẩy ra!");
@@ -393,7 +543,7 @@
             var data = {
                 phone: $scope.ob.phone,
                 id: $scope.ob.id,
-                date: $scope.filter.single_date
+                date: $scope.ob.date
             }
 
             $('input[name=save]').css('pointer-events', 'none');
@@ -469,7 +619,7 @@
 
             if ($scope.type == 1) {
                 delete $scope.ob.date_range;
-            }else{
+            } else {
                 delete $scope.ob.date;
             }
 
@@ -494,12 +644,16 @@
             $scope.$apply(function() {
                 $scope.ob.name = n;
                 $scope.ob.phone = p;
+                $scope.changePhone();
             });
 
         });
 
         $scope.reFreshForm = () => {
             $scope.ob = {};
+            if ($scope.type == 1) {
+                $scope.ob.date = moment().format("YYYY-MM-DD");
+            }
             $scope.select2();
         }
 
@@ -627,6 +781,7 @@
                         });
 
                         x.active = 0;
+
                         if ($scope.ob.time) {
                             var time = $scope.ob.time;
                             if (moment(x.time, 'HH:ss').format('HH:ss') == moment(time, 'HH:ss').format('HH:ss')) {
@@ -740,7 +895,7 @@
     });
 
     function viewRs(html) {
-        $('.dropdown-menu.resust-search').html(`<table class="table table-bordered tablelte-full table-hover">
+        $('.dropdown-menu.resust-search').html(`<table class="table table-bordered tablelte-full table-hover" style="width:100%">
 															<tbody>
 																	<tr class="info par-info">
 																		<th>Khách hàng</th>
@@ -803,5 +958,7 @@
         }
     })
 </script>
+
+
 
 <link href="<?= base_url() ?>resources/css/appointment/style_.css" rel="stylesheet">
