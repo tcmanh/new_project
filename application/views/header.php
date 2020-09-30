@@ -31,6 +31,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
     <link href="<?= base_url() ?>resources/css/sb-admin.css" rel="stylesheet">
     <link href="<?= base_url() ?>resources/vendor/toastr-master/build/toastr.min.css" rel="stylesheet">
     <link href="<?= base_url() ?>resources/vendor/select2/select2.min.css" rel="stylesheet">
+    <link href="<?= base_url() ?>resources/vendor/daterangepicker/daterangepicker.css" rel="stylesheet">
+    <link href="<?= base_url() ?>resources/vendor/jQueryUI/jquery-ui.min.css" rel="stylesheet">
+
 
 
     <script src="<?= base_url() ?>resources/vendor/jquery/jquery.min.js"></script>
@@ -38,6 +41,10 @@ defined('BASEPATH') or exit('No direct script access allowed');
     <script src="<?= base_url() ?>resources/vendor/moment/moment.min.js"></script>
     <script src="<?= base_url() ?>resources/vendor/toastr-master/build/toastr.min.js"></script>
     <script src="<?= base_url() ?>resources/vendor/select2/select2.min.js"></script>
+    <script src="<?= base_url() ?>resources/vendor/daterangepicker/daterangepicker.js"></script>
+    <script src="<?= base_url() ?>resources/vendor/jQueryUI/jquery-ui.min.js"></script>
+
+
 
 
     <script>

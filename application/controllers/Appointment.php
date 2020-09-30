@@ -22,7 +22,7 @@ class Appointment extends Auth_Controller
 		// 	->where('a.main_store_id', $filter->store_id)->get()->row();
 
 
-		$single_date = isset($filter->single_date) ? 'and ap.date="' . $filter->single_date . '"' : '';
+		$single_date = isset($filter->date) ? 'and ap.date="' . $filter->date . '"' : '';
 		$tech_id = isset($filter->technician_id) && $filter->technician_id != 0 ? 'and ap.technician_id ="' . $filter->technician_id . '"' : '';
 		if (isset($filter->technician_id)) {
 			$rs = $this->db->query("select
@@ -175,11 +175,32 @@ class Appointment extends Auth_Controller
 
 		$data = array(
 			'customer_id' => $cus_id,
-			'date'        => $_insert_data->date,
 			'time'        => $_insert_data->time,
 			'service_id'  => $_insert_data->service_id,
-
 		);
+
+		if (isset($_insert_data->date)) {
+			$data['date'] = $_insert_data->date;
+			$data['date_end'] = NULL;
+		}
+
+		if (isset($_insert_data->date_range) && $_insert_data->date_range != "") {
+			$date = explode('-', $_insert_data->date_range);
+			$date_1 = explode('/', $date[0]);
+			$date_2 = explode('/', $date[1]);
+
+			$start_date = trim($date_1[2]) . '-' . trim($date_1[1]) . '-' . trim($date_1[0]);
+			if ($date[0] == $date[1]) {
+				$end_date = date('Y-m-d', strtotime('+1 day', strtotime($start_date)));
+			} else {
+				$end_date = trim($date_2[2]) . '-' . trim($date_2[1]) . '-' . trim($date_2[0]);
+			}
+
+			$data['date'] = $start_date;
+
+			$data['date_end'] = $end_date;
+		}
+
 		if (isset($_insert_data->note)) {
 			$data['note'] = $_insert_data->note;
 		}
