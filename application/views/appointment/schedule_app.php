@@ -1,4 +1,5 @@
 <div class="schedule" id="schedule" ng-app="schedule" ng-controller="schedule" ng-init="init()">
+ <button ng-click="getAppChart(date)" class="hide" id="trigger_chart"> </button>
     <div class="table-responsive">
         <table id="tbl" class="table table-bordered" style="margin-bottom: 0">
             <thead style="background: rgb(245, 229, 209)">
@@ -23,7 +24,7 @@
                     </td>
                     <td>
                         <div class="flex " style="justify-content: center">
-                            <div  class="text-center">
+                            <div class="text-center">
                                 {{value.total}}
 
                             </div>
@@ -35,7 +36,7 @@
                     </td>
                     <td>
                         <div class="flex " style="justify-content: center">
-                            <div  class="text-center">
+                            <div class="text-center">
                                 {{value.success_show}}
 
                             </div>
@@ -46,7 +47,7 @@
                     </td>
                     <td>
                         <div class="flex " style="justify-content: center">
-                            <div  class="text-center">
+                            <div class="text-center">
                                 {{value.finish}}
                             </div>
                             <!-- <div>
@@ -80,13 +81,13 @@
     var app2 = angular.module('schedule', []);
     app2.controller('schedule', function($scope, $http) {
         $scope.init = () => {
-            $scope.getAppChart();
+            $scope.getAppChart($('input[name=date]').val());
         }
 
-        $scope.getAppChart = () => {
+        $scope.getAppChart = (date = null) => {
             $scope.data = [];
             var data = {
-                date: $('input[name=date]').val()
+                date: date
             }
             $http.get(base_url + '/appointment/ajax_get_data_appoinment_by_time_res?filter=' + JSON.stringify(data)).then(r => {
                 var rs = [];

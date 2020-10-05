@@ -711,6 +711,8 @@
                 $scope.selectUser({
                     id: 0
                 });
+
+                angular.element('#trigger_chart').scope().getAppChart($scope.ob.date);
             } else {
                 toastr["error"]("Nhập sai ngày");
 

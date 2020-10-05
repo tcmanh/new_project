@@ -314,3 +314,5 @@ class Appointment extends Auth_Controller
 		echo json_encode(array('status' => 1, 'lists' => 	$lists, 'list_customers' => 	$list_customers, 'list_tomorow_customers' => 	$list_tomorow_customers));
 	}
 }
+
+
