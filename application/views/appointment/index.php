@@ -3,6 +3,9 @@
         opacity: 0;
         transition: 0.5s all;
     }
+    .cursor{
+        cursor: pointer;
+    }
 </style>
 <div class="big-wrap" id="big-wrap">
     <div id="appointment_app" ng-app="appointment_app" ng-controller="add" ng-init="init()">
@@ -653,7 +656,12 @@
             $scope.ob = {};
             if ($scope.type == 1) {
                 $scope.ob.date = moment().format("YYYY-MM-DD");
+                $('#loadChard').trigger('click');
+                $scope.selectUser({
+                    id: 0
+                });
             }
+            $scope.resetTime();
             $scope.select2();
         }
 
@@ -702,6 +710,7 @@
         $scope.$watch('ob.date', function(newValue, oldValue) {
             var date = moment($scope.ob.date);
             $scope.cr_date = moment(date, 'YYYY-MM-DD').format('DD-MM-YYYY');
+
             if (newValue == oldValue) {
                 return false;
             }
@@ -722,9 +731,6 @@
 
         $scope.selectUser = (item) => {
 
-            if (!$scope.pass) {
-                return false;
-            }
 
             $scope.resetTime();
             $scope.cr_user = item;

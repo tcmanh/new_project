@@ -1,5 +1,6 @@
 <div class="schedule" id="schedule" ng-app="schedule" ng-controller="schedule" ng-init="init()">
- <button ng-click="getAppChart(date)" class="hide" id="trigger_chart"> </button>
+    <button ng-click="getAppChart(date)" class="hide" id="trigger_chart"> </button>
+
     <div class="table-responsive">
         <table id="tbl" class="table table-bordered" style="margin-bottom: 0">
             <thead style="background: rgb(245, 229, 209)">
