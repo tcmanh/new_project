@@ -1,4 +1,6 @@
 <div class="schedule" id="schedule" ng-app="schedule" ng-controller="schedule" ng-init="init()">
+    <button class="hide" ng-click="getAppChart()" id="loadChard">
+    </button>
     <div class="table-responsive">
         <table id="tbl" class="table table-bordered" style="margin-bottom: 0">
             <thead style="background: rgb(245, 229, 209)">
@@ -23,7 +25,7 @@
                     </td>
                     <td>
                         <div class="flex " style="justify-content: center">
-                            <div  class="text-center">
+                            <div class="text-center">
                                 {{value.total}}
 
                             </div>
@@ -35,7 +37,7 @@
                     </td>
                     <td>
                         <div class="flex " style="justify-content: center">
-                            <div  class="text-center">
+                            <div class="text-center">
                                 {{value.success_show}}
 
                             </div>
@@ -46,7 +48,7 @@
                     </td>
                     <td>
                         <div class="flex " style="justify-content: center">
-                            <div  class="text-center">
+                            <div class="text-center">
                                 {{value.finish}}
                             </div>
                             <!-- <div>
@@ -83,7 +85,7 @@
             $scope.getAppChart();
         }
 
-        $scope.getAppChart = () => {
+        $scope.getAppChart = (date = null) => {
             $scope.data = [];
             var data = {
                 date: $('input[name=date]').val()
