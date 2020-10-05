@@ -3,7 +3,8 @@
         opacity: 0;
         transition: 0.5s all;
     }
-    .cursor{
+
+    .cursor {
         cursor: pointer;
     }
 </style>
@@ -632,6 +633,8 @@
                 if (r && r.data.status == 1) {
                     $scope.reFreshForm();
                     toastr["success"]("Đặt lịch thành công");
+                    angular.element('#trigger_chart').scope().getAppChart($scope.ob.date);
+
                 } else if (r && r.data.status == 0) {
                     toastr["error"](r.data.message);
 

@@ -207,9 +207,12 @@ class Appointment extends Auth_Controller
 		}
 
 		if (empty($_insert_data->id)) {
-
 			$data['created'] = $cr_date;
+			$data['import_id'] = $this->session->userdata("admin_id");
 			$rs = $this->db->insert('appointments', $data);
+		} else {
+			$this->db->where('id', $_insert_data->id);
+			$rs = $this->db->update('appointments', $data);
 		}
 
 
@@ -270,6 +273,7 @@ class Appointment extends Auth_Controller
 		if (strtotime($rs->date . " " . $rs->time) < strtotime(date('Y-m-d H:i:s') || $rs->status > 0)) {
 			$rs->is_over = 1;
 		}
+
 		echo json_encode(array('status' => 1, 'data' => $rs));
 	}
 
@@ -313,6 +317,37 @@ class Appointment extends Auth_Controller
 
 		echo json_encode(array('status' => 1, 'lists' => 	$lists, 'list_customers' => 	$list_customers, 'list_tomorow_customers' => 	$list_tomorow_customers));
 	}
+
+	public function ajax_get_all_app()
+	{
+		$filter = (object) json_decode($this->input->get('filter'));
+		
+		if (isset($filter->date_range) && $filter->date_range != "") {
+			$date = explode('-', $filter->date_range);
+			$date_1 = explode('/', $date[0]);
+			$date_2 = explode('/', $date[1]);
+
+			$start_date = trim($date_1[2]) . '-' . trim($date_1[1]) . '-' . trim($date_1[0]);
+			if ($date[0] == $date[1]) {
+				$end_date = date('Y-m-d', strtotime('+1 day', strtotime($start_date)));
+			} else {
+				$end_date = trim($date_2[2]) . '-' . trim($date_2[1]) . '-' . trim($date_2[0]);
+			}
+
+			$data['date'] = $start_date;
+
+			$data['date_end'] = $end_date;
+		}
+
+
+		$this->db->select('a.time as time_,a.note,a.id,a.service_id,c.type,a.date,DATE_FORMAT(a.time,"%H:%i") time,b.name,b.phone')->from('appointments a')->join('customers b', 'a.customer_id=b.id')->join('services c', 'a.service_id=c.id');
+
+		if (isset($filter->date_range)) {
+			$this->db->where('a.date <=',$end_date);
+			$this->db->where('a.date >=',$start_date);
+		}
+		$rs = $this->db->get()->result();
+		echo json_encode(array('status' => 1, 'data' => $rs,$this->db->last_query()));
+
+	}
 }
-
-
