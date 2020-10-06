@@ -9,6 +9,54 @@
     }
 </style>
 <div ng-app="appointment_app" ng-controller="add" ng-init="init()">
+    <div id="modalArival" class="modal fade" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Xác nhận khách đến</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Bạn muốn xác nhận khách tới?</p>
+                    <h5 style="display: flex;justify-content: space-between;">
+                        <div class="badge badge-danger cursor">
+                            Không
+                        </div>
+                        <div class="badge badge-success cursor" ng-click="confirm(1)">
+                            Đúng
+                        </div>
+                    </h5>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalComplete" class="modal fade" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Xác nhận hoàn tất</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Bạn muốn xác nhận hoàn tất?</p>
+                    <h5 style="display: flex;justify-content: space-between;">
+                        <div class="badge badge-danger cursor">
+                            Không
+                        </div>
+                        <div class="badge badge-success cursor" ng-click="confirm(2)">
+                            Đúng
+                        </div>
+                    </h5>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="box box-info">
         <div class="box-body ">
             <ul class="nav nav-tabs">
@@ -80,12 +128,14 @@
                                                 *****{{value.phone.slice(-4)}}
                                             </td>
                                             <td class="text-center">
-                                                <div class="badge badge-success">
-                                                    Mới
-                                                </div>
-                                                <div class="badge badge-warning">
-                                                    Cũ
-                                                </div>
+                                                <h6>
+                                                    <div class="badge badge-success" ng-if="value.is_old==0">
+                                                        Mới
+                                                    </div>
+                                                    <div class="badge badge-warning" ng-if="value.is_old==1">
+                                                        Cũ
+                                                    </div>
+                                                </h6>
                                             </td>
                                             <td>
                                                 <strong>
@@ -118,15 +168,41 @@
                                             </td>
                                             <td class="text-center">
                                                 <div ng-if="value.status==0">
-                                                    <button class="btn btn-default cursor" style="width: 180px">
+                                                    <button class="btn btn-default cursor" style="width: 180px" ng-click="confirmModal(0,value)">
                                                         Xác nhận khách tới
                                                     </button>
                                                 </div>
                                                 <div ng-if="value.status==1">
-                                                    <button class="btn btn-primary cursor" style="width: 180px">
+                                                    <button class="btn btn-primary cursor" style="width: 180px" ng-click="confirmModal(1,value)">
                                                         Xác nhận hoàn tất
                                                     </button>
                                                 </div>
+                                                <h6 ng-if=" value.status==2">
+                                                    <div class="badge badge-primary">
+                                                        Đã hoàn tất
+                                                    </div>
+                                                </h6>
+                                                <!--  -->
+                                                <span class="cursor" style="font-size: 17px;" ng-click="backC(value)" ng-if="value.status>0 && value.status <2">
+                                                    <i class="fa fa-undo" aria-hidden="true"></i>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr ng-if="!ajax_data||ajax_data.length==0">
+                                            <td colspan="6" class="text-center" style="padding: 20px 0">
+                                                <div class="ant-empty-image"><svg width="64" height="41" viewBox="0 0 64 41" xmlns="http://www.w3.org/2000/svg">
+                                                        <g transform="translate(0 1)" fill="none" fill-rule="evenodd">
+                                                            <ellipse fill="#F5F5F5" cx="32" cy="33" rx="32" ry="7"></ellipse>
+                                                            <g fill-rule="nonzero" stroke="#D9D9D9">
+                                                                <path d="M55 12.76L44.854 1.258C44.367.474 43.656 0 42.907 0H21.093c-.749 0-1.46.474-1.947 1.257L9 12.761V22h46v-9.24z"></path>
+                                                                <path d="M41.613 15.931c0-1.605.994-2.93 2.227-2.931H55v18.137C55 33.26 53.68 35 52.05 35h-40.1C10.32 35 9 33.259 9 31.137V13h11.16c1.233 0 2.227 1.323 2.227 2.928v.022c0 1.605 1.005 2.901 2.237 2.901h14.752c1.232 0 2.237-1.308 2.237-2.913v-.007z" fill="#FAFAFA"></path>
+                                                            </g>
+                                                        </g>
+                                                    </svg>
+                                                </div>
+                                                <span>
+                                                    Trống
+                                                </span>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -639,6 +715,57 @@
 
             $scope.getApp();
             $scope.dateInputInit();
+        }
+
+        $scope.confirmModal = (type, value) => {
+            $scope.cr_select = value;
+
+            if (type == 0) {
+                $('#modalArival').modal('show');
+            } else if (type == 1) {
+                $('#modalComplete').modal('show');
+            }
+        }
+
+        $scope.backC = (value) => {
+            $scope.cr_select = value;
+
+            if (value.status == 1) {
+                $scope.confirm(0, 1);
+            }
+            if (value.status == 2) {
+                $scope.confirm(1, 1);
+            }
+        }
+
+        $scope.confirm = (type, back = null) => {
+            var data = {
+                id: $scope.cr_select.id,
+                status: type,
+                back: back
+            }
+            $http.post(base_url + 'appointment/ajax_change_status', JSON.stringify(data)).then(r => {
+                console.log(r);
+                if (r && r.data.status == 1) {
+
+                    CmodalComplete();
+                    CmodalArival();
+                    $scope.getApp();
+                } else toastr["error"]("Đã có lỗi xẩy ra!");
+            });
+        }
+
+        function CmodalComplete() {
+            if ($('#modalComplete').hasClass('show')) {
+                $("#modalComplete").modal('hide');
+
+            }
+        }
+
+        function CmodalArival() {
+            if ($('#modalArival').hasClass('show')) {
+                $("#modalArival").modal('hide');
+            }
         }
 
         $scope.getApp = () => {

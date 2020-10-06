@@ -11,67 +11,17 @@
     <div id="appointment_app" ng-app="appointment_app" ng-controller="add" ng-init="init()">
         <button ng-click="addMoreobject(value)" id="btn-moreAttr" style="opacity: 0;display: none">
         </button>
-        <div id="detailHour" class="modal fade" role="dialog">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Chi tiết lịch đặt khung giờ {{time_current}}</h4>
-                    </div>
-                    <div class="modal-body">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th class="text-center">
-                                        Mã lịch hẹn
-                                    </th>
-                                    <th class="text-center">
-                                        Tên khách hàng
-                                    </th>
-                                    <th class="text-center">
-                                        Ngày tạo
-                                    </th>
-                                    <th class="text-center">
-                                        Người đặt
-                                    </th>
-                                    <th class="text-center">
-                                        Giờ hẹn
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr ng-repeat="(index,value) in detailHour">
-                                    <td class="text-center">
-                                        <span class="label label-default">
-                                            {{value.id}}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        {{value.cus_name}}
-                                    </td>
-                                    <td class="text-center">
-                                        {{value.created}}
-                                    </td>
-                                    <td>
-                                        {{value.user}}
-                                    </td>
-                                    <td class="text-center">
-                                        {{value.time}}
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
 
-            </div>
-        </div>
+      
+
         <div id="history" class="modal fade" role="dialog">
-            <div class="modal-dialog">
+            <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Lịch sử khách hàng</h4>
+                        <h5 class="modal-title">Lịch sử khách hàng</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
                     <div class="modal-body">
                         <div class="table-responsive">
@@ -82,23 +32,18 @@
                                             Ngày
                                         </th>
                                         <th class="text-center">
-                                            Kỹ thuật viên
+                                            Dịch vụ
                                         </th>
-                                        <th class="text-center">
-                                            Chi nhánh
-                                        </th>
+
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr ng-repeat="(index,value) in customer_history">
                                         <td class="text-center">
-                                            {{value.date}}
+                                            {{value.date}} {{value.time}}
                                         </td>
                                         <td>
-                                            {{value.user_name}}
-                                        </td>
-                                        <td class="text-center">
-                                            {{value.description}}
+                                            {{value.sevice_name}}
                                         </td>
                                     </tr>
                                 </tbody>
@@ -106,9 +51,9 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
+
         <div class="box-body">
             <div class="flex" style="justify-content: center">
                 <form role="form" id="form_app">
@@ -730,6 +675,8 @@
             }
 
         }, true);
+
+
 
         $scope.selectUser = (item) => {
 

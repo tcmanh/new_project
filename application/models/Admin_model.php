@@ -213,7 +213,9 @@ class Admin_model extends CI_Model {
         		$this->session->set_userdata("admin_id", $q->id);
         		$this->session->set_userdata("loggedin",1);
         		$ip = $this->getUserIP();
-        		$sql2 = "UPDATE admin SET last_signin = NOW(), ip = ".$this->db->escape($ip)." WHERE id = ".$q->id;
+            //	$sql2 = "UPDATE admin SET last_signin = NOW(), ip = ".$this->db->escape($ip)." WHERE id = ".$q->id;
+        		$sql2 = "UPDATE admin SET last_signin = NOW() WHERE id = ".$q->id;
+            
         		$this->db->query($sql2);
         		return TRUE;
         	} else {

@@ -107,7 +107,8 @@ class Appointment extends Auth_Controller
 		$filter = (object) json_decode($this->input->get('filter'));
 		$phone = preg_replace('/\s+/', '', $filter->phone);
 
-		$rs = $this->db->select()->from('appointments a')->join('customers b', 'a.customer_id=b.id')->where('b.phone', $phone)->order_by('a.date', 'desc')
+		$rs = $this->db->select('a.status,c.type as type,c.name as sevice_name,c.price,a.time as time_,a.note,a.id,a.service_id,c.type,DATE_FORMAT(a.date,"%d-%m-%Y") date,DATE_FORMAT(a.time,"%H:%i") time,b.name,b.phone,DATE_FORMAT(a.created,"%d-%m-%Y") created')->from('appointments a')->join('customers b', 'a.customer_id=b.id')->join('services c', 'a.service_id=c.id')->where('b.phone', $phone)->order_by('a.date', 'desc')
+			->where('a.status', 2)
 			->limit('10')
 			->get()->result();
 
@@ -241,11 +242,15 @@ class Appointment extends Auth_Controller
 					'created',
 					DATE_FORMAT(ap.created,'%d-%m-%Y %H:%i'),
 					'time',
-					ap.time
+					ap.time,
+					'status',
+					ap.status,
+					'service',
+					c.name
 				)
 			) AS obs
 		
-		 from appointments ap join customers cus ON ap.customer_id=cus.id
+		 from appointments ap join customers cus ON ap.customer_id=cus.id join services c ON ap.service_id=c.id
 		 where  1 $single_date
 		 group by hour")->result();
 
@@ -267,7 +272,8 @@ class Appointment extends Auth_Controller
 	public function ajax_get_app()
 	{
 		$filter = (object) json_decode($this->input->get('filter'));
-		$rs = $this->db->select('a.time as time_,a.note,a.id,a.service_id,c.type,a.date,DATE_FORMAT(a.time,"%H:%i") time,b.name,b.phone')->from('appointments a')->join('customers b', 'a.customer_id=b.id')->join('services c', 'a.service_id=c.id')->where('a.id',	$filter->id)
+		$rs = $this->db->select('a.time as time_,a.note,a.id,a.service_id,c.type,a.date,DATE_FORMAT(a.time,"%H:%i") time,b.name,b.phone')->from('appointments a')->join('customers b', 'a.customer_id=b.id')->join('services c', 'a.service_id=c.id')
+			->where('a.id',	$filter->id)
 			->get()->row();
 		$rs->is_over = 0;
 		if (strtotime($rs->date . " " . $rs->time) < strtotime(date('Y-m-d H:i:s') || $rs->status > 0)) {
@@ -321,7 +327,7 @@ class Appointment extends Auth_Controller
 	public function ajax_get_all_app()
 	{
 		$filter = (object) json_decode($this->input->get('filter'));
-		
+
 		if (isset($filter->date_range) && $filter->date_range != "") {
 			$date = explode('-', $filter->date_range);
 			$date_1 = explode('/', $date[0]);
@@ -340,14 +346,35 @@ class Appointment extends Auth_Controller
 		}
 
 
-		$this->db->select('a.status,c.type as type,c.name as sevice_name,c.price,a.time as time_,a.note,a.id,a.service_id,c.type,DATE_FORMAT(a.date,"%d-%m-%Y") date,DATE_FORMAT(a.time,"%H:%i") time,b.name,b.phone,DATE_FORMAT(a.created,"%d-%m-%Y") created')->from('appointments a')->join('customers b', 'a.customer_id=b.id')->join('services c', 'a.service_id=c.id');
+		$this->db->select('if(app_.id is not null,1,0) is_old ,a.status,c.type as type,c.name as sevice_name,c.price,a.time as time_,a.note,a.id,a.service_id,c.type,DATE_FORMAT(a.date,"%d-%m-%Y") date,DATE_FORMAT(a.time,"%H:%i") time,b.name,b.phone,DATE_FORMAT(a.created,"%d-%m-%Y") created')->from('appointments a')->join('customers b', 'a.customer_id=b.id')->join('services c', 'a.service_id=c.id')
+		->join('appointments app_', 'a.customer_id=app_.customer_id and app_.status=2 and app_.date < CURDATE()', 'left')
+		;
 
 		if (isset($filter->date_range)) {
-			$this->db->where('a.date <=',$end_date);
-			$this->db->where('a.date >=',$start_date);
+			$this->db->where('a.date <=', $end_date);
+			$this->db->where('a.date >=', $start_date);
 		}
 		$rs = $this->db->get()->result();
-		echo json_encode(array('status' => 1, 'data' => $rs,$this->db->last_query()));
+		echo json_encode(array('status' => 1, 'data' => $rs));
+	}
 
+	public function ajax_change_status()
+	{
+		$_insert_data = (object) json_decode(file_get_contents('php://input'), true);
+
+		$this->db->set('status', $_insert_data->status);
+
+		if ($_insert_data->status == 1) {
+			if (isset($_insert_data->back)) {
+				$this->db->set('arrival_time', NULL);
+			} else {
+				$this->db->set('arrival_time', date('Y-m-d H:i:s'));
+			}
+		}
+
+		$this->db->where('id', $_insert_data->id);
+
+		$rs =	$this->db->update('appointments');
+		echo json_encode(array('status' => 1, 'data' => $rs));
 	}
 }

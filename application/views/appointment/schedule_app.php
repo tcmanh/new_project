@@ -1,5 +1,61 @@
 <div class="schedule" id="schedule" ng-app="schedule" ng-controller="schedule" ng-init="init()">
     <button ng-click="getAppChart(date)" class="hide" id="trigger_chart"> </button>
+    <div id="detailHour" class="modal fade" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Chi tiết lịch đặt khung giờ {{time_current}}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th class="text-center">
+                                    Mã lịch hẹn
+                                </th>
+                                <th class="text-center">
+                                    Tên khách hàng
+                                </th>
+                                <th class="text-center">
+                                    Ngày tạo
+                                </th>
+                                <th class="text-center">
+                                    Dịch vụ
+                                </th>
+                                <th class="text-center">
+                                    Giờ hẹn
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="(index,value) in detailHour">
+                                <td class="text-center">
+                                    <span class="label label-default">
+                                        {{value.id}}
+                                    </span>
+                                </td>
+                                <td>
+                                    {{value.cus_name}}
+                                </td>
+                                <td class="text-center">
+                                    {{value.created}}
+                                </td>
+                                <td>
+                                    {{value.service}}
+                                </td>
+                                <td class="text-center">
+                                    {{value.time}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="table-responsive">
         <table id="tbl" class="table table-bordered" style="margin-bottom: 0">
@@ -7,15 +63,15 @@
                 <tr>
                     <th class="text-center">Khung giờ</th>
                     <th class="text-center">Lịch còn lại</th>
-                    <th class="text-center">Đang điều trị</th>
+                    <th class="text-center">Đang Thực hiện</th>
                     <th class="text-center">
-                        Đang chờ
+                        Hoàn thành
                     </th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="(index,value) in data" ng-class="{'green':value.total/total_all<0.15||value.total==0,'yellow':value.total/total_all<0.3&&value.total/total_all>=0.15,'red':value.total/total_all>=0.3}">
-                    <td class="flex" style="justify-content: space-between">
+                    <td class="flex" style="justify-content: space-between;display: flex;">
                         <span>
                             {{value.hour}}
                         </span>
@@ -144,6 +200,18 @@
 
                 } else toastr["error"]("Đã có lỗi xẩy ra!");
             })
+        }
+
+        $scope.openDetailHour = (obs, time) => {
+
+            console.log(obs, time);
+
+            $scope.detailHour = obs.filter(x => {
+                if (x.status < 2)
+                    return x
+            })
+
+            $('#detailHour').modal('show');
         }
 
         $scope.someFunction = () => {

@@ -1,18 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-$servername = "gaumiao.guone.vn"; // Your database server name
-$username = "gaumiao_user"; // Your database user name which you use to connect
-$password = "qoRQ5sxvh"; // Your database password
-
-// Create connection
-$conn = mysqli_connect($servername, $username, $password);
-
-// Check connection
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
-echo "Connected successfully";
 /*
 | -------------------------------------------------------------------
 | DATABASE CONNECTIVITY SETTINGS
@@ -92,7 +80,7 @@ $db['default'] = array(
 	// 'password' => '9Dy5SvUPsT',
 	// 'database' => 'sql9367693',
 	// 'dbdriver' => 'mysqli',
-	'hostname' => 'gaumiao.guone.vn',
+	'hostname' => '103.97.125.60',
 	'username' => 'gaumiao_user',
 	'password' => 'qoRQ5sxvh',
 	'database' => 'gaumiao_data',
