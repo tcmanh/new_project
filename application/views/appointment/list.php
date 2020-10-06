@@ -1,3 +1,13 @@
+<style>
+    .content-wrapper>div {
+        opacity: 0;
+        line-height: 1.3
+    }
+
+    .cursor {
+        cursor: pointer;
+    }
+</style>
 <div ng-app="appointment_app" ng-controller="add" ng-init="init()">
     <div class="box box-info">
         <div class="box-body ">
@@ -49,13 +59,13 @@
                                                 Người mua
                                             </th>
                                             <th class="text-center">
+                                                Khách
+                                            </th>
+                                            <th class="text-center">
                                                 Thông tin chung
                                             </th>
                                             <th class="text-center">
-                                                Địa chỉ
-                                            </th>
-                                            <th class="text-center">
-                                                Tổng tiền
+                                                Thông tin dịch vụ
                                             </th>
 
                                             <th class="text-center">
@@ -66,15 +76,57 @@
                                     <tbody>
                                         <tr ng-repeat="(index,value) in ajax_data">
                                             <td class="text-center">{{index+1}}</td>
-                                            <td>{{value.name}}</td>
-                                            <td>*****{{value.phone.slice(-4)}}</td>
-                                            <td> {{value.date}} {{value.time}}</td>
-                                            <td> {{value.note}}</td>
-                                            <td> {{value.created}}</td>
+                                            <td><strong>{{value.name}}</strong> <br>
+                                                *****{{value.phone.slice(-4)}}
+                                            </td>
                                             <td class="text-center">
-                                                <a href="appointment?id={{value.id}}" target="_blank">
-                                                    <i class="fa fa-edit"></i>
-                                                </a>
+                                                <div class="badge badge-success">
+                                                    Mới
+                                                </div>
+                                                <div class="badge badge-warning">
+                                                    Cũ
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <strong>
+                                                    Ngày đặt:
+                                                </strong>
+                                                {{value.date}} {{value.time}} <br>
+                                                <strong>
+                                                    Ngày tạo:
+                                                </strong>
+                                                {{value.created}}
+                                                <div ng-if="value.note">
+                                                    <strong>
+                                                        Ghi chú:
+                                                    </strong>
+                                                    {{value.note}}
+                                                </div>
+
+                                            </td>
+
+                                            <td>
+                                                <strong> Loại: </strong>
+                                                <span ng-if="value.type==1">
+                                                    Lẻ
+                                                </span>
+                                                <span ng-if="value.type==2">
+                                                    Dài ngày
+                                                </span><br>
+                                                <strong> Tên: </strong>{{value.sevice_name}} <br>
+                                                <strong> Giá tiền:</strong> <span style="font-size: 14px">{{value.price|number}}</span> đ
+                                            </td>
+                                            <td class="text-center">
+                                                <div ng-if="value.status==0">
+                                                    <button class="btn btn-default cursor" style="width: 180px">
+                                                        Xác nhận khách tới
+                                                    </button>
+                                                </div>
+                                                <div ng-if="value.status==1">
+                                                    <button class="btn btn-primary cursor" style="width: 180px">
+                                                        Xác nhận hoàn tất
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -583,7 +635,7 @@
         $scope.init = () => {
             $scope.filter = {};
             $scope.filter.date_range = moment().format("DD/MM/YYYY") + " - " + moment().format("DD/MM/YYYY")
-            $('.content-wrapper').css('opacity', 1);
+            $('.content-wrapper>div').css('opacity', 1);
 
             $scope.getApp();
             $scope.dateInputInit();
@@ -593,7 +645,7 @@
             $http.get(base_url + 'appointment/ajax_get_all_app?filter=' + JSON.stringify($scope.filter)).then(r => {
                 console.log(r);
                 if (r && r.data.status == 1) {
-                    $scope.ajax_data=r.data.data;
+                    $scope.ajax_data = r.data.data;
 
                 } else toastr["error"]("Đã có lỗi xẩy ra!");
             });

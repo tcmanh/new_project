@@ -424,6 +424,21 @@
         padding: 0px 8px;
     }
     .content-wrapper{
+        background: white;
+    }
+    .content-wrapper>div{
         opacity: 0;
         transition: 0.5s all;
+        background: white;
     }
+    .resust-search.dropdown-menu {
+        right: 0;
+        left: unset;
+    }
+    
+
+    @media only screen and (min-width: 600px) {
+        #appointment_app .resust-search {
+            min-width: 400px;
+        }
+      }

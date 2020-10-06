@@ -1,7 +1,6 @@
 <style>
-    .content-wrapper {
+    .content-wrapper>div {
         opacity: 0;
-        transition: 0.5s all;
     }
 
     .cursor {
@@ -134,7 +133,7 @@
                                     <input type="text" id="phoneForm" value="" onkeyup="this.value=this.value.replace(/[^\d]{12,}/,'').replace(/\D/g,'')" ng-model-options="{debounce:350}" class="form-control phone" ng-model="ob.phone" ng-change="changePhone()" name="phone" placeholder="Điện thoại" required="required" autocomplete="off">
                                     <div class="dropdown-menu resust-search table-responsive" style="width: 100%;"></div>
                                     <span class="cursor" data-toggle="modal" data-target="#history" data-toggle="tooltip" title="Lịch sử khách hàng">
-                                        <img ng-if="!load_history && customer_history && customer_history.length>0" style="width: 22px;position: absolute;top: 50%;right: 7px;transform: translateY(-50%);" src="resources/images/school-material.svg" alt="">
+                                        <img ng-if="!load_history && customer_history && customer_history.length>0 && ob.phone" style="width: 22px;position: absolute;top: 50%;right: 7px;transform: translateY(-50%);" src="resources/images/school-material.svg" alt="">
                                         <img ng-if="load_history==true" style="width: 22px;position: absolute;top: 50%;right: 7px;transform: translateY(-50%);" src="resources/images/loadhv.svg" alt="">
                                     </span>
                                 </div>
@@ -442,7 +441,7 @@
 
     appointment_app.controller('add', function($scope, $http, $location) {
         $scope.init = () => {
-            $('.content-wrapper').css('opacity', 1);
+            $('.content-wrapper>div').css('opacity', 1);
             $scope.load_tvv = false;
             $scope.load_list_tvv = false;
             $scope.busy_check = false;

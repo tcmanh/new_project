@@ -340,7 +340,7 @@ class Appointment extends Auth_Controller
 		}
 
 
-		$this->db->select('a.time as time_,a.note,a.id,a.service_id,c.type,a.date,DATE_FORMAT(a.time,"%H:%i") time,b.name,b.phone')->from('appointments a')->join('customers b', 'a.customer_id=b.id')->join('services c', 'a.service_id=c.id');
+		$this->db->select('a.status,c.type as type,c.name as sevice_name,c.price,a.time as time_,a.note,a.id,a.service_id,c.type,DATE_FORMAT(a.date,"%d-%m-%Y") date,DATE_FORMAT(a.time,"%H:%i") time,b.name,b.phone,DATE_FORMAT(a.created,"%d-%m-%Y") created')->from('appointments a')->join('customers b', 'a.customer_id=b.id')->join('services c', 'a.service_id=c.id');
 
 		if (isset($filter->date_range)) {
 			$this->db->where('a.date <=',$end_date);
